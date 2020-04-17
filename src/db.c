@@ -110,7 +110,7 @@ robj *lookupKeyRead(redisDb *db, robj *key) {
  */
 robj *lookupKeyWrite(redisDb *db, robj *key) {
 
-    // 删除过期键
+    // 删除过期键       查询时检验过期,使用被动删除
     expireIfNeeded(db,key);
 
     // 查找并返回 key 的值对象

@@ -322,6 +322,7 @@ static int _dictKeyIndex(dict *ht, const void *key) {
     dictEntry *he;
 
     /* Expand the hashtable if needed */
+    //需要扩容时扩容
     if (_dictExpandIfNeeded(ht) == DICT_ERR)
         return -1;
     /* Compute the key hash value */

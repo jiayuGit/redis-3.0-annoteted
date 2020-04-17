@@ -110,7 +110,7 @@ void setGenericCommand(redisClient *c, int flags, robj *key, robj *val, robj *ex
         if (unit == UNIT_SECONDS) milliseconds *= 1000;
     }
 
-    // 如果设置了 NX 或者 XX 参数，那么检查条件是否不符合这两个设置
+    // 如果设置了 NX 或者 XX 参数，那么检查条件是否不符合这两个设置       setnx setnn
     // 在条件不符合时报错，报错的内容由 abort_reply 参数决定
     if ((flags & REDIS_SET_NX && lookupKeyWrite(c->db,key) != NULL) ||
         (flags & REDIS_SET_XX && lookupKeyWrite(c->db,key) == NULL))

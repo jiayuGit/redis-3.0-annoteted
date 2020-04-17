@@ -1511,7 +1511,7 @@ int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) {
     }
 
     // 根据 AOF 政策，
-    // 考虑是否需要将 AOF 缓冲区中的内容写入到 AOF 文件中
+    // 考虑是否需要将 AOF 缓冲区中的内容写入到 AOF 文件中    是否有后台fsync文件同步 延迟最多两秒
     /* AOF postponed flush: Try at every cron cycle if the slow fsync
      * completed. */
     if (server.aof_flush_postponed_start) flushAppendOnlyFile(0);
@@ -1859,6 +1859,7 @@ void initServerConfig() {
     // 在这里初始化是因为接下来读取 .conf 文件时可能会用到这些命令
     server.commands = dictCreate(&commandTableDictType,NULL);
     server.orig_commands = dictCreate(&commandTableDictType,NULL);
+    //初始化命令hashtable
     populateCommandTable();
     server.delCommand = lookupCommandByCString("del");
     server.multiCommand = lookupCommandByCString("multi");
@@ -2077,7 +2078,7 @@ void initServer() {
     // 创建共享对象
     createSharedObjects();
     adjustOpenFilesLimit();
-    server.el = aeCreateEventLoop(server.maxclients+REDIS_EVENTLOOP_FDSET_INCR);
+    server.el = aeCreateEventLoop(server.maxclients+REDIS_EVENTLOOP_FDSET_INCR);//创建监听事件
     server.db = zmalloc(sizeof(redisDb)*server.dbnum);
 
     /* Open the TCP listening socket for the user commands. */
@@ -2155,7 +2156,7 @@ void initServer() {
 
     /* Create an event handler for accepting new connections in TCP and Unix
      * domain sockets. */
-    // 为 TCP 连接关联连接应答（accept）处理器
+    // 为 TCP 连接关联连接应答（accept）处理器    ipv4 ipv6两个事件
     // 用于接受并应答客户端的 connect() 调用
     for (j = 0; j < server.ipfd_count; j++) {
         if (aeCreateFileEvent(server.el, server.ipfd[j], AE_READABLE,
@@ -2251,7 +2252,7 @@ void populateCommandTable(void) {
         }
 
         // 将命令关联到命令表
-        retval1 = dictAdd(server.commands, sdsnew(c->name), c);
+        retval1 = dictAdd(server.commands, sdsnew(c->name), c);//src.dict
 
         /* Populate an additional dictionary that will be unaffected
          * by rename-command statements in redis.conf. 

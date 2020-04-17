@@ -517,7 +517,7 @@ int aeProcessEvents(aeEventLoop *eventLoop, int flags)
             shortest = aeSearchNearestTimer(eventLoop);
         if (shortest) {
             // 如果时间事件存在的话
-            // 那么根据最近可执行时间事件和现在时间的时间差来决定文件事件的阻塞时间
+            // 那么根据最近可执行时间事件和现在时间的时间差来决定文件事件的阻塞时间    设置select的等待阻塞时间
             long now_sec, now_ms;
 
             /* Calculate the time missing for the nearest

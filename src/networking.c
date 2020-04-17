@@ -1522,9 +1522,9 @@ void processInputBuffer(redisClient *c) {
         }
 
         // 将缓冲区中的内容转换成命令，以及命令参数
-        if (c->reqtype == REDIS_REQ_INLINE) {
+        if (c->reqtype == REDIS_REQ_INLINE) {//set key value\t\n          缓冲区指令
             if (processInlineBuffer(c) != REDIS_OK) break;
-        } else if (c->reqtype == REDIS_REQ_MULTIBULK) {
+        } else if (c->reqtype == REDIS_REQ_MULTIBULK) {//*3\r\n$3\r\nSET\r\n
             if (processMultibulkBuffer(c) != REDIS_OK) break;
         } else {
             redisPanic("Unknown request type");
